@@ -1,0 +1,25 @@
+{
+  "name": "csview",
+  "version": "0.0.1",
+  "description": "CSV viewer",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "npx jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keshavsaharia/csview.git"
+  },
+  "keywords": [
+    "CSV",
+    "viewer",
+    "CSV",
+    "viewer"
+  ],
+  "author": "Keshav Saharia (keshav@keshavsaharia.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/keshavsaharia/csview/issues"
+  },
+  "homepage": "https://github.com/keshavsaharia/csview#readme"
+}
