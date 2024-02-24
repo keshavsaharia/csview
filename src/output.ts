@@ -40,9 +40,10 @@ import {
  * @desc 	Controls a 2D area that is rendered to the console.
  */
 export class Output {
-	size: Size					// Output size
+	size: Size					// Output size and viewport
+	viewport: Size
+
 	cursor: Point				// Output cursor
-	scroll: number				// Allows output to scroll down without rewriting past lines
 
 	text: Array<Buffer>			// The text content of the window
 	color: Array<Buffer>		// The foreground color of each cell in the 2D space
@@ -71,7 +72,8 @@ export class Output {
      * @param size
      * @param option
      */
-	constructor(size: Size = fullScreen(), option: {
+	constructor(viewport: Size = fullScreen(), option: {
+		size?: Size
 		utf8?: boolean
 		live?: boolean
 		alpha?: boolean
@@ -92,11 +94,10 @@ export class Output {
 		this.charFill = this.utf16 ? 0x2000 : 0x20
 
         // Initialize size and positioning
-		this.setSize(size)
-		this.cursor = originPoint()
-		this.scroll = 0
+		this.setSize(option.size || viewport)
+			.setViewport(viewport)
 
-		process.stdout.on('resize', function() {
+		process.stdout.on('resize', function(this: Output) {
 			this.setSize(fullScreen())
 			this.renderUpdates()
 		}.bind(this))
@@ -107,13 +108,24 @@ export class Output {
      *
      * @param size
      */
-    setSize(size: Size) {
+    setSize(size: Size): this {
         // Update size for each 2D array type
 		this.text = resizeText(this.text, size.width, size.height, this.charSize, this.charFill, this.utf16)
+
+		// TODO: update is size of viewport
 		this.update = resizeUpdate(this.update, size.width, size.height)
 		this.setColorSize(size)
         this.size = size
+		return this
     }
+
+	setViewport(viewport: Size): this {
+		if (! this.cursor) {
+			this.cursor = originPoint()
+		}
+		this.viewport = viewport
+		return this
+	}
 
     /**
      * Set the size of the color, background, and style arrays of Buffers.
@@ -262,7 +274,7 @@ export class Output {
 	 * @func 	writeChar
 	 * @desc 	Write a character to output
 	 */
-	writeChar(char: number, x: number, y: number): boolean {
+	writeChar(char: number, x: number, y: number, color?: OutputColor): boolean {
 		return updateChar(
 			this.text[y],
 			this.update[y],

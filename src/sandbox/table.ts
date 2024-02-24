@@ -1,17 +1,17 @@
 
 // Top 4 bits are overwritten
-const ROUNDED = 128
-const NORMAL = 64
-const BOLD = 32
-const DOUBLE = 16
-const ANY = ROUNDED | NORMAL | BOLD | DOUBLE
+export const ROUNDED = 128
+export const NORMAL = 64
+export const BOLD = 32
+export const DOUBLE = 16
+export const ANY = ROUNDED | NORMAL | BOLD | DOUBLE
 // Bottom 4 bits persist - flag for whether line is
 // horizontal and/or vertical, and 2 bits for dash pattern
-const VERTICAL = 8
-const HORIZONTAL = 4
-const DASH4 = 3
-const DASH3 = 2
-const DASH2 = 1
+export const VERTICAL = 8
+export const HORIZONTAL = 4
+export const DASH4 = 3
+export const DASH3 = 2
+export const DASH2 = 1
 
 // 0 - rounded
 // 1 - normal
@@ -22,10 +22,10 @@ const DASH2 = 1
 
 // + shaped kernels
 
-const TOP = 0
-const RIGHT = 1
-const BOTTOM = 2
-const LEFT = 3
+export const TOP = 0
+export const RIGHT = 1
+export const BOTTOM = 2
+export const LEFT = 3
 
 // 2 directions
 // 4 corners
@@ -62,6 +62,18 @@ function main() {
 	horizontal(hierarchy, NORMAL, 9, 1, 3)
 	horizontal(hierarchy, NORMAL, 10, 1, 3)
 	console.log(tableRender(hierarchy))
+
+	const flow = resizeTable(100, 30)
+	horizontal(flow, NORMAL, 4, 21, 26)
+	horizontal(flow, NORMAL, 8, 26, 30)
+	vertical(flow, NORMAL, 26, 4, 8)
+	rounded(flow, 26, 4)
+	rounded(flow, 26, 8)
+
+	rectangle(flow, BOLD, 1, 1, 20, 5)
+	rectangle(flow, BOLD, 30, 6, 16, 4)
+	console.log(tableRender(flow))
+
 }
 
 function resizeTable(width: number, height: number): Buffer[] {
@@ -95,6 +107,12 @@ function vertical(table: Buffer[], value: number, col: number, start: number, en
 		const line = table[y]
 		line.writeUint8(value | VERTICAL | ((line.readUint8(col) & 0x0f)), col)
 	}
+}
+
+function rounded(table: Buffer[], x: number, y: number) {
+	if (x < 0 || x >= table[0].length || y < 0 || y >= table.length)
+		return
+	table[y].writeUint8(ROUNDED | table[y].readUint8(x), x)
 }
 
 function tableRender(table: Buffer[]) {
@@ -156,28 +174,29 @@ const displayKernels: DisplayKernels[] = [
 	// Rounded corners
 	[ ROUNDED, [
 		['▢', [ 0, 0, 0, 0 ]],				// Empty single cell
-		['╰', [ NORMAL, NORMAL, 0, 0 ]],
-		['╯', [ NORMAL, 0, 0, NORMAL ]],
-		['╭', [ 0, NORMAL, NORMAL, 0 ]],
-		['╮', [0, 0, NORMAL, NORMAL]],
+		['╰', [ ANY, ANY, 0, 0 ]],
+		['╯', [ ANY, 0, 0, ANY ]],
+		['╭', [ 0, ANY, ANY, 0 ]],
+		['╮', [0, 0, ANY, ANY]],
 	]],
 
 	// Straight dashed lines
-	// [ BOLD | DASH4,   [ ['┋', [ BOLD, 0, BOLD, 0 ]],
-	// 					['┉', [ 0, BOLD, 0, BOLD ]]]],
-	// [ DASH4, 		  [ ['┊', [ NORMAL, 0, NORMAL, 0 ]],
-	// 					['┈', [ 0, NORMAL, 0, NORMAL ]]]],
-	// [ NORMAL | DASH3, [ ['┆', [ NORMAL, 0, NORMAL, 0 ]],
-	// 					['┄', [ 0, NORMAL, 0, NORMAL ]]]],
+	// [ BOLD | DASH4,   [ ['┋', [ ANY, 0, ANY, 0 ]],
+	// 					['┉', [ 0, ANY, 0, ANY ]]]],
+	// [ DASH4, 		  [ ['┊', [ ANY, 0, ANY, 0 ]],
+	// 					['┈', [ 0, ANY, 0, ANY ]]]],
 	// [ BOLD | DASH3,   [ ['┇', [ BOLD, 0, BOLD, 0 ]],
 	// 					['┅', [ 0, BOLD, 0, BOLD ]]]],
-	// [ NORMAL | DASH2, [ ['╎', [ NORMAL, 0, NORMAL, 0 ]],
+	// [ DASH3, 		  [ ['┆', [ NORMAL, 0, NORMAL, 0 ]],
+	// 					['┄', [ 0, NORMAL, 0, NORMAL ]]]],
+	//
+	// [ DASH2, 		  [ ['╎', [ NORMAL, 0, NORMAL, 0 ]],
 	// 					['╌', [ 0, NORMAL, 0, NORMAL ]]]],
 	// [ BOLD | DASH2,   [ ['╏', [ BOLD, 0, BOLD, 0 ]],
 	// 					['╍', [ 0, BOLD, 0, BOLD ]]]],
 
 	// Normal to bold crossover lines
-	[ NORMAL | BOLD, [
+	[ BOLD, [
 		['┖', [ BOLD, NORMAL, 0, 0 ]],	// Corners
 		['┕', [ NORMAL, BOLD, 0, 0 ]],
 		['┙', [ NORMAL, 0, 0, BOLD ]],
@@ -231,7 +250,7 @@ const displayKernels: DisplayKernels[] = [
 	]],
 
 	// Hybrid from normal to double lines
-	[ NORMAL | DOUBLE, [
+	[ DOUBLE, [
 		['╖', [ 0, 0, DOUBLE, NORMAL ]],		// Corners
 		['╕', [ 0, 0, NORMAL, DOUBLE ]],
 		['╜', [ DOUBLE, 0, 0, NORMAL ]],
