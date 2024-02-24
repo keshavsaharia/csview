@@ -8,7 +8,7 @@
     "test": "npx jest"
   },
   "bin": {
-    "csview": "lib/csview.js"
+    "csview": "./dist/csview.js --max-old-space-size=1000"
   },
   "repository": {
     "type": "git",
@@ -17,8 +17,7 @@
   "keywords": [
     "CSV",
     "viewer",
-    "CSV",
-    "viewer"
+    "CSV+viewer"
   ],
   "author": "Keshav Saharia (keshav@keshavsaharia.com)",
   "license": "MIT",

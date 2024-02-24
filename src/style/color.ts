@@ -34,6 +34,21 @@ export class Color {
 	static brightCyan = 	ansiColor(96,  20, 240, 240)
 	static white = 			ansiColor(97, 233, 235, 235)
 
+	static random(): OutputColor {
+		const n = Math.floor(Math.random() * 8)
+		switch (n) {
+		case 0: 		return Color.black
+		case 1: 		return Color.red
+		case 2: 		return Color.green
+		case 3: 		return Color.yellow
+		case 4: 		return Color.blue
+		case 5: 		return Color.magenta
+		case 6: 		return Color.cyan
+		case 7: 		return Color.lightGray
+		default: 		return Color.white
+		}
+	}
+
 }
 
 export function isOutputColor(color: any): color is OutputColor {

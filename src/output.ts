@@ -95,6 +95,11 @@ export class Output {
 		this.setSize(size)
 		this.cursor = originPoint()
 		this.scroll = 0
+
+		process.stdout.on('resize', function() {
+			this.setSize(fullScreen())
+			this.renderUpdates()
+		}.bind(this))
 	}
 
     /**
@@ -105,8 +110,8 @@ export class Output {
     setSize(size: Size) {
         // Update size for each 2D array type
 		this.text = resizeText(this.text, size.width, size.height, this.charSize, this.charFill, this.utf16)
-        this.setColorSize(size)
 		this.update = resizeUpdate(this.update, size.width, size.height)
+		this.setColorSize(size)
         this.size = size
     }
 
@@ -178,7 +183,8 @@ export class Output {
 		// Calculate cursor position and ensure the calculated position is
 		// within the window width
 		const cursor = inlineCursor(display)
-		if (display.x + cursor >= this.size.width)
+		const x = display.x + cursor
+		if (x < 0 || x >= this.size.width)
 			return 0
 
 		// Horizontal space remaining, and the total line offset
@@ -196,7 +202,7 @@ export class Output {
             this.setColor(color, display)
 
 		const sequence = Buffer.from(inlineText(display, text), this.utf16 ? 'utf16le' : 'utf8')
-        const x = display.x + cursor
+
 
         // Iterate over sequence and set update bits into a full byte before updating
         let updateByte = 0
@@ -281,7 +287,7 @@ export class Output {
         )
 	}
 
-	setBackground(color: OutputColor, area: Area) {
+	setBackground(color: OutputColor, area: Area = { x: 0, y: 0, ...this.size }) {
 		updateColorArea(
             this.background,
             this.style,
@@ -344,34 +350,48 @@ export class Output {
 	/**
 	 * Run a frame of rendering
 	 */
-	render() {
+	async render() {
 		if (this.firstRender) {
 			this.firstRender = false
-			this.getCursorPosition().then((cursor) => {
+			return this.getCursorPosition().then((cursor) => {
 				this.cursor = cursor
 				process.stdout.setEncoding(this.encoding)
 				if (cursor.y + this.size.height >= process.stdout.rows) {
 					console.log(new Array(this.size.height).fill('\n').join(''))
-					this.cursor.y = process.stdout.rows - this.size.height - 2
+					this.cursor.y = process.stdout.rows - this.size.height - 1
 				}
-				this.renderUpdates()
-
+				return this.renderUpdates()
 			})
 			.catch((error) => {
 				console.clear()
-				this.renderUpdates()
+				return this.renderUpdates()
 			})
 		}
-		else this.renderUpdates()
+		else return this.renderUpdates()
 	}
 
-	private renderUpdates() {
+	async delay(ms: number) {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(ms)
+			}, ms)
+		})
+	}
+
+	/**
+	 * Render each updated
+	 */
+	private renderUpdates(): number {
+		let updated = 0
 		for (let y = 0 ; y < this.size.height ; y++) {
 			eachUpdate(this.update[y], this.size.width, (start, end) => {
 				this.renderLine(start, end, y)
+				updated += (end - start)
 			})
 		}
-		this.moveCursor(0, this.cursor.y + this.size.height)
+		this.moveCursor(0, this.size.height)
+		// this.moveCursor(0, 0)
+		return updated
 	}
 
 	moveCursor(x: number, y: number) {
@@ -413,8 +433,23 @@ export class Output {
 		})
 	}
 
+	async getKeyPress(): Promise<string> {
+		return new Promise((resolve: (key: string) => any, reject) => {
+			process.stdin.setRawMode(true)
+			process.stdin.resume()
+			process.stdin.setEncoding('utf8')
+
+			process.stdin.once('data', (key: string) => {
+				process.stdin.setRawMode(false)
+				if (key === '\u0003')
+					process.exit()
+				resolve(key)
+			})
+		})
+	}
+
 	private renderLine(start: number, end: number, y: number) {
-		if (! this.text[y])
+		if (y < 0 || ! this.text[y])
 			return
 
 		outputLine(
@@ -459,6 +494,14 @@ export class Output {
 
 	getTextSize() {
 		return this.charSize
+	}
+
+	getWidth() {
+		return this.size.width
+	}
+
+	getHeight() {
+		return this.size.height
 	}
 
 	getColorDepth() {
