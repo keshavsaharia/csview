@@ -1,176 +1,20 @@
+import { KernelState, KernelDefinition } from './types'
 
 // Top 4 bits are overwritten
 export const ROUNDED = 128
 export const NORMAL = 64
 export const BOLD = 32
 export const DOUBLE = 16
-export const ANY = ROUNDED | NORMAL | BOLD | DOUBLE
+export const DASHED = 8
+export const FULL = 4
+export const ANY = 0xfc
+
 // Bottom 4 bits persist - flag for whether line is
 // horizontal and/or vertical, and 2 bits for dash pattern
-export const VERTICAL = 8
-export const HORIZONTAL = 4
-export const DASH4 = 3
-export const DASH3 = 2
-export const DASH2 = 1
+export const VERTICAL = 2
+export const HORIZONTAL = 1
 
-// 0 - rounded
-// 1 - normal
-// 2 - bold
-// 3 - double
-// 4 - thick
-// 5 -
-
-// + shaped kernels
-
-export const TOP = 0
-export const RIGHT = 1
-export const BOTTOM = 2
-export const LEFT = 3
-
-// 2 directions
-// 4 corners
-// 4 T directions
-// All directions
-
-type DisplayKernels = [ number, DisplayKernel[] ]
-type DisplayKernel = [ string, number[] ]
-
-function main() {
-	const table = resizeTable(50, 20)
-	rectangle(table, NORMAL, 0, 0, 49, 19)
-	rectangle(table, DOUBLE, 0, 0, 29, 19)
-	rectangle(table, NORMAL, 0, 0, 19, 19)
-	rectangle(table, DOUBLE, 10, 2, 19, 8)
-	rectangle(table, NORMAL, 0, 0, 49, 19)
-	rectangle(table, BOLD, 1, 12, 20, 5)
-	rectangle(table, DOUBLE, 0, 0, 49, 10)
-	rectangle(table, DOUBLE, 44, 2, 5, 7)
-	console.log(tableRender(table))
-
-	const hierarchy = resizeTable(50, 20)
-	vertical(hierarchy, NORMAL, 1, 1, 10)
-	horizontal(hierarchy, NORMAL, 1, 1, 3)
-	horizontal(hierarchy, NORMAL, 2, 1, 3)
-	horizontal(hierarchy, NORMAL, 3, 1, 4)
-	vertical(hierarchy, NORMAL, 4, 3, 7)
-	horizontal(hierarchy, NORMAL, 4, 4, 6)
-	horizontal(hierarchy, NORMAL, 5, 4, 6)
-	horizontal(hierarchy, NORMAL, 6, 4, 6)
-	horizontal(hierarchy, NORMAL, 7, 4, 6)
-
-	horizontal(hierarchy, NORMAL, 8, 1, 3)
-	horizontal(hierarchy, NORMAL, 9, 1, 3)
-	horizontal(hierarchy, NORMAL, 10, 1, 3)
-	console.log(tableRender(hierarchy))
-
-	const flow = resizeTable(100, 30)
-	horizontal(flow, NORMAL, 4, 21, 26)
-	horizontal(flow, NORMAL, 8, 26, 30)
-	vertical(flow, NORMAL, 26, 4, 8)
-	rounded(flow, 26, 4)
-	rounded(flow, 26, 8)
-
-	rectangle(flow, BOLD, 1, 1, 20, 5)
-	rectangle(flow, BOLD, 30, 6, 16, 4)
-	console.log(tableRender(flow))
-
-}
-
-function resizeTable(width: number, height: number): Buffer[] {
-	const table: Buffer[] = new Array(height)
-	for (let y = 0 ; y < height ; y++)
-		table[y] = Buffer.alloc(width).fill(0)
-	return table
-}
-
-function rectangle(table: Buffer[], value: number, x: number, y: number, width: number, height: number) {
-	vertical(table, value, x, y, y + height)
-	horizontal(table, value, y, x, x + width)
-	vertical(table, value, x + width, y, y + height)
-	horizontal(table, value, y + height, x, x + width)
-}
-
-function horizontal(table: Buffer[], value: number, row: number, start: number, end: number) {
-	if (row < 0 || row >= table.length)
-		return
-
-	const line = table[row]
-	for (let x = start ; x <= end && x < line.length ; x++)
-		line.writeUint8(value | HORIZONTAL | ((line.readUint8(x) & 0x0f)), x)
-}
-
-function vertical(table: Buffer[], value: number, col: number, start: number, end: number) {
-	if (col < 0 || col >= table[0].length)
-		return
-
-	for (let y = start ; y <= end && y < table.length ; y++) {
-		const line = table[y]
-		line.writeUint8(value | VERTICAL | ((line.readUint8(col) & 0x0f)), col)
-	}
-}
-
-function rounded(table: Buffer[], x: number, y: number) {
-	if (x < 0 || x >= table[0].length || y < 0 || y >= table.length)
-		return
-	table[y].writeUint8(ROUNDED | table[y].readUint8(x), x)
-}
-
-function tableRender(table: Buffer[]) {
-	const render: string[][] = []
-	for (let y = 0 ; y < table.length ; y++) {
-		render[y] = []
-		for (let x = 0 ; x < table[y].length ; x++) {
-			render[y][x] = tableChar(table, x, y) || ' '
-		}
-	}
-	return render.map((line) => line.join('')).join('\n')
-}
-
-function tableChar(table: Buffer[], x: number, y: number): string | null {
-	const value = tableValue(table, x, y)
-	if (value == 0)
-		return null
-
-	// Find the first kernel that matches each directions corresponding table style
-	const horizontal = (value & HORIZONTAL) > 0
-	const vertical = (value & VERTICAL) > 0
-
-	const dir = [
-		vertical ? tableValue(table, x, y - 1, VERTICAL) : 0,
-		horizontal ? tableValue(table, x + 1, y, HORIZONTAL) : 0,
-		vertical ? tableValue(table, x, y + 1, VERTICAL) : 0,
-		horizontal ? tableValue(table, x - 1, y, HORIZONTAL) : 0
-	]
-
-	for (const displayKernel of displayKernels) {
-		const pattern = displayKernel[0]
-		const match = pattern & value
-		if (match > 0) {
-			const matchKernel = displayKernel[1].find((kernel) => kernelMatch(kernel, dir))
-			if (matchKernel)
-				return matchKernel[0]
-		}
-	}
-}
-
-function kernelMatch(kernel: DisplayKernel, dir: number[]): boolean {
-	return kernel[1].every((value, index) => (
-		// If zero, corresponding direction must also be zero
-		value == 0 ? dir[index] == 0 :
-		// Any corresponding direction specification must match
-		((value & dir[index]) > 0)))
-}
-
-function tableValue(table: Buffer[], x: number, y: number, dir: number = 0): number {
-	if (y < 0 || y >= table.length || x < 0 || x >= table[0].length)
-		return 0
-	const value = table[y].readUint8(x)
-	if (dir > 0 && ((value & dir) == 0))
-		return 0
-	return value
-}
-
-const displayKernels: DisplayKernels[] = [
+export const KERNEL_DEFINITION: KernelDefinition = [
 	// Rounded corners
 	[ ROUNDED, [
 		['▢', [ 0, 0, 0, 0 ]],				// Empty single cell
@@ -185,10 +29,11 @@ const displayKernels: DisplayKernels[] = [
 	// 					['┉', [ 0, ANY, 0, ANY ]]]],
 	// [ DASH4, 		  [ ['┊', [ ANY, 0, ANY, 0 ]],
 	// 					['┈', [ 0, ANY, 0, ANY ]]]],
-	// [ BOLD | DASH3,   [ ['┇', [ BOLD, 0, BOLD, 0 ]],
-	// 					['┅', [ 0, BOLD, 0, BOLD ]]]],
-	// [ DASH3, 		  [ ['┆', [ NORMAL, 0, NORMAL, 0 ]],
-	// 					['┄', [ 0, NORMAL, 0, NORMAL ]]]],
+	[ BOLD | DASHED,   [ ['┇', [ BOLD, 0, BOLD, 0 ]],
+						 ['┅', [ 0, BOLD, 0, BOLD ]]]],
+	[ DASHED, 		   [ ['┆', [ NORMAL, 0, NORMAL, 0 ]],
+					 	 ['┄', [ 0, NORMAL, 0, NORMAL ]]]],
+	[ FULL, [ ['█', []] ] ],
 	//
 	// [ DASH2, 		  [ ['╎', [ NORMAL, 0, NORMAL, 0 ]],
 	// 					['╌', [ 0, NORMAL, 0, NORMAL ]]]],
@@ -334,4 +179,11 @@ const displayKernels: DisplayKernels[] = [
 	]],
 ]
 
-main()
+// Compile to array of bytes
+export const KERNELS: KernelState = KERNEL_DEFINITION.map((kernels) => [
+	kernels[0],
+	kernels[1].map((kernel) => [
+		Array.from(Buffer.from(kernel[0], 'utf16le')),
+		kernel[1]
+	])
+])
