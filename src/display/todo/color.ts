@@ -1,4 +1,4 @@
-import { Area } from './geometry'
+import { Area } from '../types'
 
 /**
  * Standard color dictionary.

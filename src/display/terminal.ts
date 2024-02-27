@@ -115,6 +115,14 @@ export class Terminal {
 		// this.cursor.show()
 	}
 
+	async delay(ms: number) {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(ms)
+			}, ms)
+		})
+	}
+
 	static fullScreen(): Size {
 		return {
 			width: process.stdout.columns,
