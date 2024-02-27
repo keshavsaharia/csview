@@ -14,7 +14,8 @@ export async function readStream(filePath: string, callback: ReadCallback, optio
 		const stream = fs.createReadStream(filePath, option.encoding)
 		    .on('data', async (obj) => {
 		        input += obj.toString()
-				while (start < input.lastIndexOf('\n')) {
+				const end = input.lastIndexOf('\n')
+				while (start < end) {
 					const line = parseLine(input, start)
 					// If first line, and header is not disabled
 					if (lines == 0 && option.header !== false) {

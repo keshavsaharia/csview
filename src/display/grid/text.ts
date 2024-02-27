@@ -214,6 +214,10 @@ export class TextGrid {
 		return this.area
 	}
 
+	getSize() {
+		return this.size
+	}
+
 	getWidth() {
 		return this.size.width
 	}

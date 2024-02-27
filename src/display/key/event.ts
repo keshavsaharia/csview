@@ -35,9 +35,11 @@ export class KeyEvent {
 		return new Promise((resolve: (event: KeyEvent) => any) => {
 			process.stdin.setRawMode(true)
 			process.stdin.setEncoding('utf8')
+			process.stdin.resume()
 
 			process.stdin.once('data', (data: string) => {
 				process.stdin.setRawMode(false)
+				process.stdin.pause()
 
 				const keyEvent = new KeyEvent()
 				keyEvent.data = data

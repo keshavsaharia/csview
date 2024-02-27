@@ -1,4 +1,4 @@
-import { Display } from '../types'
+import { Display, Area } from '../types'
 
 export function within(value: number, limit: number, end?: number): number {
 	if (end == null)
@@ -56,6 +56,20 @@ export function inlineWrapCursor(display: Display): boolean {
 export function inlineSpace(display: Display) {
 	return display.width - display.offset % display.width
 }
+
+
+export function inlineDisplayArea(display: Display): Area {
+	const cursor = display.offset % display.width
+	const line = Math.floor(display.offset / display.width)
+
+	return {
+		x: display.x + cursor,
+		y: display.y + line,
+		width: (display.length || 0), //display.width - cursor,
+		height: 1
+	}
+}
+
 
 /**
  * @func	lineHeight

@@ -1,6 +1,6 @@
 import { ByteGrid } from '..'
 import { Area } from '../types'
-import { LINE_CHAR } from './constant'
+import { BOLD, NORMAL, DOUBLE, LINE_CHAR } from './constant'
 
 export class LineGrid extends ByteGrid {
 

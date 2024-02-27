@@ -115,6 +115,10 @@ export class Terminal {
 		// this.cursor.show()
 	}
 
+	renderUpdate() {
+		// TODO: only render updated areas
+	}
+
 	async delay(ms: number) {
 		return new Promise((resolve) => {
 			setTimeout(() => {
@@ -132,6 +136,10 @@ export class Terminal {
 
 	getArea(): Area {
 		return this.area
+	}
+
+	getSize(): Size {
+		return this.size
 	}
 
 	getWidth() {

@@ -1,12 +1,8 @@
-#!/usr/bin/env node --max-old-space-size=8192
+#!/usr/bin/env node
 
-import os from 'os'
+import { CliHandler } from './cli/handler'
 
-console.log(process.env)
-async function csview(args: string[]) {
-	console.log('cwd', process.cwd())
-	console.log('args', args)
-	console.log('memory', os.freemem())
-}
-
-csview(process.argv)
+new CliHandler({
+	cwd: process.cwd(),
+	argv: process.argv
+}).handle()

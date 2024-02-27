@@ -8,7 +8,7 @@
     "test": "npx jest"
   },
   "bin": {
-    "csview": "./dist/csview.js --max-old-space-size=1000"
+    "csview": "./dist/csview.js"
   },
   "repository": {
     "type": "git",
