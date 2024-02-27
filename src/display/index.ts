@@ -1,5 +1,5 @@
 export * from './terminal'
-export * from './cursor'
+export * from './cursor/point'
 export * from './grid'
 export * from './text'
 export * from './table'

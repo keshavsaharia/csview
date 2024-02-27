@@ -3,9 +3,9 @@ import { Terminal, Cursor } from '.'
 async function main() {
 	const terminal = new Terminal()
 	terminal.style.fillColor(terminal.style.getArea(), 1, 5)
-	terminal.text.writeString(terminal.cursor, 'hello world')
+	// terminal.text.writeString(terminal.cursor, 'hello world')
 	terminal.cursor.moveToNextLine()
-	terminal.text.writeString(terminal.cursor, 'yo yo yo')
+	// terminal.text.writeString(terminal.cursor, 'yo yo yo')
 	terminal.render()
 
 	while (true) {
@@ -35,7 +35,7 @@ async function main() {
 		})
 
 		if (key.length == 1) {
-			terminal.text.setStringValue(terminal.cursor.x, terminal.cursor.y, key)
+			// terminal.text.setStringValue(terminal.cursor.x, terminal.cursor.y, key)
 			terminal.cursor.changeX(1)
 		}
 		terminal.render()

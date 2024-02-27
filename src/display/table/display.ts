@@ -179,15 +179,15 @@ function testing() {
 	for (let i = 0 ; i < 256 ; i++) {
 		Buffer.from(char[i] || 'X', 'utf16le').copy(buffer, i * 2)
 	}
-	console.log(buffer.toString('utf16le'))
+	// console.log(buffer.toString('utf16le'))
 
 	// console.log(char.join(''))
 	// console.log(char.length)
-	// const output = char.join('')
-	// console.log(output.substring(0, 64))
-	// console.log(output.substring(64, 128))
-	// console.log(output.substring(128, 192))
-	// console.log(output.substring(192))
+	const output = char.join('')
+	console.log(output.substring(0, 64))
+	console.log(output.substring(64, 128))
+	console.log(output.substring(128, 192))
+	console.log(output.substring(192))
 }
 
 function tableValue(top: number, right: number, bottom: number, left: number) {

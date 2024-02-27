@@ -1,5 +1,3 @@
-import { Terminal } from '.'
-
 /**
  * @interface 	Point
  * @desc 		An x, y coordinate, where x corresponds to column index and y corresponds

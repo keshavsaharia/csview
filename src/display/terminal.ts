@@ -1,6 +1,8 @@
 import { Cursor, TextGrid, StyleGrid } from '.'
-import { Size, Point, KeyMap } from './types'
-import { KEY_MAP } from './constant'
+import { Size, Point } from './types'
+
+import { getNextKey } from './key/read'
+import { KeyMap } from './key/types'
 
 export class Terminal {
 	size: Size
@@ -76,37 +78,8 @@ export class Terminal {
 	/**
 	 * Wait for a key press
 	 */
-	async nextKey(map: KeyMap = {}): Promise<string> {
-		const terminal = this
-
-		return new Promise((resolve: (key: string) => any) => {
-			process.stdin.setRawMode(true)
-			process.stdin.setEncoding('utf8')
-
-			process.stdin.once('data', (data: string) => {
-				process.stdin.setRawMode(false)
-
-				const hex = Buffer.from(data, 'utf8').toString('hex')
-				const specialKey = KEY_MAP[hex]
-
-				if (specialKey && map[specialKey]) {
-					try {
-						map[specialKey].call(terminal, data)
-					}
-					catch (e) {}
-					resolve(specialKey)
-				}
-				else if (specialKey == 'exit') {
-					console.clear()
-					process.exit()
-				}
-				else {
-					if (map.key)
-						map.key.call(terminal, data)
-					resolve(data)
-				}
-			})
-		})
+	async nextKey(map: KeyMap<Terminal> = {}): Promise<string> {
+		return getNextKey.call(this, map)
 	}
 
 
@@ -134,9 +107,5 @@ export class Terminal {
 	getHeight() {
 		return this.size.height
 	}
-
-}
-
-async function main() {
 
 }

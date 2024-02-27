@@ -1,4 +1,4 @@
-import { KeyEvent } from './types'
+import { KeyEvent } from './key/types'
 
 // Cursor escape constants
 export const ESCAPE_START = Buffer.from([27, 0, 91, 0])

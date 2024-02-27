@@ -1,10 +1,9 @@
-import {
-	ESCAPE_START, SEMICOLON,
-	CURSOR_HOME, CURSOR_VISIBLE, CURSOR_INVISIBLE
-} from './constant'
+import { Point } from '../grid/types'
+import { getCursorPosition } from './read'
 
-import { Point } from './types'
-
+/**
+ *
+ */
 export class Cursor implements Point {
 	x: number = 0
 	y: number = 0
@@ -37,7 +36,7 @@ export class Cursor implements Point {
 
 	static operation(value: number, id: number): Buffer {
 		return Buffer.concat([
-			ESCAPE_START,
+			Cursor.ESCAPE,
 			Buffer.from(value.toString(), 'utf16le'),
 			Buffer.from([id, 0])
 		])
@@ -152,60 +151,6 @@ export class Cursor implements Point {
 	 * Get cursor position
 	 */
 	async getPosition(): Promise<Point> {
-		return new Promise((resolve: (cursor: Point) => any, reject) => {
-			process.stdin.once('readable', () => {
-				const buffer = process.stdin.read()
-				process.stdin.setRawMode(false)
-				if (! Buffer.isBuffer(buffer))
-					reject(new Error('Invalid input response for getting cursor position'))
-
-				// Receive an escape sequence with the cursor position
-				if (buffer.readUint8(0) == 0x1b && buffer.readUint8(1) == 0x5b) {
-					// Get the string position
-					const pos = buffer.slice(2, buffer.length - 1).toString('utf8')
-					const semicolon = pos.indexOf(';')
-					if (semicolon < 0)
-						reject(new Error('Invalid position "' + pos.toString() + '"'))
-
-					// Parse position from string, where row;col -> y;x
-					const x = parseInt(pos.substring(semicolon + 1)) - 1
-					const y = parseInt(pos.substring(0, semicolon)) - 1
-					if (isNaN(x) || isNaN(y))
-						reject(new Error('Invalid position "' + pos.toString() + '"'))
-
-					resolve({ x, y })
-				}
-				// TODO: reject error cases
-				else reject(buffer)
-			})
-
-			process.stdin.setRawMode(true)
-			process.stdout.setEncoding('utf16le')
-			process.stdout.write(Cursor.GET_POSITION)
-		})
+		return getCursorPosition()
 	}
 }
-
-/**
- * Wait for a key press
- */
-export async function getKeyPress(): Promise<string> {
-	return new Promise((resolve: (key: string) => any) => {
-		process.stdin.setRawMode(true)
-		process.stdin.resume()
-		process.stdin.setEncoding('utf8')
-
-		process.stdin.once('data', (key: string) => {
-			// process.stdin.setRawMode(false)
-			if (key === '\u0003')
-				process.exit()
-			resolve(key)
-		})
-	})
-}
-
-// const cursor = new Cursor()
-// process.stdout.setEncoding('utf16le')
-// console.clear()
-// console.log('yo yo')
-// console.log('hello world' + Cursor.column(1) + 'abcdefg')
