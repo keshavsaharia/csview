@@ -46,6 +46,16 @@ export class Terminal {
 		this.color.fillColor(area, foreground, background)
 	}
 
+	fillForeground(area: Area, foreground: number) {
+		this.style.fillForeground(area)
+		this.color.fillForeground(area, foreground)
+	}
+
+	fillBackground(area: Area, background: number) {
+		this.style.fillBackground(area)
+		this.color.fillBackground(area, background)
+	}
+
 	start() {
 		// Set output encoding for rendering
 		process.stdout.setEncoding('utf16le')

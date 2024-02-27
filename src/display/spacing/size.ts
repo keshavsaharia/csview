@@ -1,17 +1,16 @@
 import {
 	Style,
-	parseBorderPadding
-} from '.'
+	Display
+} from '../types'
 
 import {
-	Display,
 	within,
 	inlineHeight,
 	inlineLength,
 	inlineCursor,
 	inlineSpace,
 	inlineLine
-} from '../geometry'
+} from './inline'
 
 export function initializeSize(display: Display, parent: Display, style: Style): Display {
 	if (style.width != null) {

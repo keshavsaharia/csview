@@ -1,5 +1,3 @@
-import { Terminal } from '.'
-
 /**
  * @interface 	Point
  * @desc 		An x, y coordinate, where x corresponds to column index and y corresponds
@@ -28,3 +26,61 @@ export interface Size {
  * 				used from a parent view (either horizontal space if inline, otherwise lines).
  */
 export interface Area extends Point, Size {}
+
+/**
+ * For calculating sizing and alignment
+ */
+export interface Display extends Area {
+	offset: number
+	length?: number
+	// Maximum height of a child
+	max?: number
+	// For cropping wrapped text by delimiter
+	start?: number
+	end?: number
+}
+
+export type Data = { [key: string]: any }
+
+export interface Style {
+	// Sizing, defaults to parent size
+	width?: string | number
+	maxWidth?: string | number
+	height?: string | number
+	maxHeight?: string | number
+
+	// Text color
+	color?: string | number | Array<number>
+	background?: string | number | Array<number>
+
+	// Border and whether to join adjacent child views with borders
+	border?: Array<number | boolean> | string | boolean
+	borderLeft?: string | boolean
+	borderRight?: string | boolean
+	borderTop?: string | boolean
+	borderBottom?: string | boolean
+	borderStyle?: string
+
+	// Spacing
+	padding?: number | Array<number>
+	margin?: number | Array<number>
+
+	// Alignment and inline (side-by-side) placement of views
+	display?: string
+	block?: boolean
+	inline?: boolean
+
+	// Set explicit line height
+	lineHeight?: number
+
+	// Text alignment
+	align?: 'left' | 'center' | 'right'
+	alignLeft?: boolean
+	alignCenter?: boolean
+	alignRight?: boolean
+
+	// Whether to
+	wrap?: boolean
+	inherit?: boolean
+	inheritWrap?: boolean
+}

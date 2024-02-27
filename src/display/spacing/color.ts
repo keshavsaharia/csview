@@ -1,10 +1,12 @@
-import {
-	within
-} from '../geometry'
+import { within } from './inline'
 
-import {
-	OutputColor
-} from '.'
+export interface OutputColor {
+	ansi?: number
+	r?: number
+	g?: number
+	b?: number
+	index?: number
+}
 
 
 function ansiColor(ansi: number, r: number, g: number, b: number): OutputColor {

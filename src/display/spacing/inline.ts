@@ -1,9 +1,6 @@
-import {
-	Area,
-	Display
-} from '.'
+import { Display } from '../types'
 
-function within(value: number, limit: number, end?: number): number {
+export function within(value: number, limit: number, end?: number): number {
 	if (end == null)
 		return Math.max(0, Math.min(value, limit))
 	return Math.max(limit, Math.min(value, end))

@@ -1,7 +1,7 @@
 import {
 	Display,
 	Point
-} from '.'
+} from '../types'
 
 export function displayPoint(point: Point, display?: Display) {
 	if (display == null)

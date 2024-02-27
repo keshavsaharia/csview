@@ -1,6 +1,6 @@
 import {
 	Display
-} from '../geometry'
+} from '../types'
 
 export function getPadding(padding?: Array<number> | number) {
 	if (padding == null)

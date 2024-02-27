@@ -2,7 +2,7 @@ import { ByteGrid } from '.'
 import { Area } from './types'
 
 /**
- * 
+ *
  */
 export class ColorGrid extends ByteGrid {
 
@@ -12,6 +12,14 @@ export class ColorGrid extends ByteGrid {
 	fillColor(area: Area, foreground: number, background: number) {
 		const value = ColorGrid.colorValue(foreground, background)
 		this.fillArea(area, value)
+	}
+
+	fillForeground(area: Area, foreground: number) {
+		this.fillAreaUpdate(area, foreground, 0x0f)
+	}
+
+	fillBackground(area: Area, background: number) {
+		this.fillAreaUpdate(area, background << 4, 0xf0)
 	}
 
 	/**

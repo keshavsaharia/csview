@@ -16,6 +16,10 @@ export class StyleGrid extends ByteGrid {
 		return this
 	}
 
+	getEscape(x: number, y: number, color?: number): Buffer {
+		return StyleGrid.escape(this.read(x, y), color)
+	}
+
 	/**
 	 * Fill the area with the given foreground and background color
 	 */
@@ -23,8 +27,12 @@ export class StyleGrid extends ByteGrid {
 		this.fillAreaUpdate(area, StyleGrid.COLOR)
 	}
 
-	getEscape(x: number, y: number, color?: number): Buffer {
-		return StyleGrid.escape(this.read(x, y), color)
+	fillForeground(area: Area) {
+		this.fillAreaUpdate(area, StyleGrid.FOREGROUND)
+	}
+
+	fillBackground(area: Area) {
+		this.fillAreaUpdate(area, StyleGrid.BACKGROUND)
 	}
 
 	/**

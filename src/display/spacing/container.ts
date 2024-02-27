@@ -1,17 +1,16 @@
-import {
-	Display,
-	inlineCursor, inlineSpace,
-	inlineLength, inlineLine
-} from '../..'
+import { Style, Display } from '../types'
+
+import { parseSize } from './size'
 
 import {
-	Style,
-	parseSize,
+	inlineCursor, inlineSpace,
+	inlineLength, inlineLine
+} from './inline'
+
+import {
 	getPadding,
-	addPadding,
-	insertPadding,
-	parseBorderPadding
-} from '../../style'
+	insertPadding
+} from './padding'
 
 /**
  * @func 	displayContainer
@@ -49,9 +48,6 @@ export function displayContainer(display: Display, parent: Display, style: Style
 
 	// Get the configured padding or the default equal 0 padding array
 	const padding = getPadding(style.padding)
-	// Merge the border size into the padding if there is one
-	if (style.border != null)
-		addPadding(padding, parseBorderPadding(style.border))
 
 	// If there is a padding in some direction, adjusts the position object
 	insertPadding(container, padding)

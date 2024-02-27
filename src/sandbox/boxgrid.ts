@@ -1,0 +1,40 @@
+import { BoxGrid } from '..'
+
+function main() {
+	const grid = new BoxGrid({ width: 50, height: 20 })
+
+	grid.drawVerticalLine(2, 10, 5)
+	grid.drawVerticalLine(3, 10, 5.1)
+	grid.drawVerticalLine(4, 10, 5.2)
+	grid.drawVerticalLine(5, 10, 5.3)
+	grid.drawVerticalLine(6, 10, 5.4)
+	grid.drawVerticalLine(7, 10, 5.5)
+	grid.drawVerticalLine(8, 10, 5.6)
+	grid.drawVerticalLine(9, 10, 5.7)
+	grid.drawVerticalLine(10, 10, 5.8)
+	grid.drawVerticalLine(11, 10, 5.9)
+	grid.drawVerticalLine(12, 10, 6.0)
+	grid.drawVerticalLine(13, 10, 6.0)
+
+	// grid.drawHorizontalLine(2, 1, 5)
+	// grid.drawHorizontalLine(2, 2, 5.1)
+	// grid.drawHorizontalLine(2, 3, 5.2)
+	// grid.drawHorizontalLine(2, 4, 5.3)
+	// grid.drawHorizontalLine(2, 5, 5.4)
+	// grid.drawHorizontalLine(2, 6, 5.5)
+	// grid.drawHorizontalLine(2, 7, 5.6)
+	// grid.drawHorizontalLine(2, 8, 5.7)
+	// grid.drawHorizontalLine(2, 9, 5.8)
+	// grid.drawHorizontalLine(2, 10, 5.9)
+	// grid.drawHorizontalLine(2, 11, 6)
+	// grid.drawHorizontalLine(2, 12, 5.5)
+	grid.drawOutline({ x: 0, y: 0, width: 50, height: 20 })
+	grid.drawOutline({ x: 0, y: 0, width: 10, height: 20 })
+	// grid.drawOutline({ x: 5, y: 2, width: 20, height: 8 })
+	// grid.drawOutline({ x: 9, y: 0, width: 41, height: 20 })
+	// grid.drawOutline({ x: 10, y: 1, width: 39, height: 18 })
+	// grid.drawInline({ x: 10, y: 1, width: 39, height: 18 })
+	console.log(grid.render1())
+}
+
+main()

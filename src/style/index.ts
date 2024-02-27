@@ -1,5 +1,0 @@
-export * from './interface'
-export * from './border'
-export * from './padding'
-export * from './size'
-export * from './color'

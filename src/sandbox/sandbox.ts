@@ -1,17 +1,17 @@
-import { Terminal, Cursor } from '.'
+import { Terminal } from '..'
 
 async function main() {
 	const terminal = new Terminal()
 	terminal.writeString('hello world')
 	// terminal.cursor.move(5, 5)
-	terminal.fillColor(terminal.getArea(), 1, 5)
+	terminal.fillForeground(terminal.getArea(), 2)
 	// terminal.text.writeString(terminal.cursor, 'hello world')
 	// terminal.cursor.moveToNextLine()
 	// terminal.text.writeString(terminal.cursor, 'yo yo yo')
 	terminal.render()
 
 	while (true) {
-		const key = await terminal.nextKey({
+		await terminal.nextKey({
 			key(event) {
 				this.writeString(event.data, this.cursor)
 				this.cursor.changeX(1)

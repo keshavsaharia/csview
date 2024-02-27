@@ -1,7 +1,6 @@
 import {
-	Display,
 	Size
-} from '.'
+} from './types'
 
 export function within(value: number, limit: number, end?: number): number {
 	if (end == null)
