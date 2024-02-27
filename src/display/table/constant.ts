@@ -14,6 +14,8 @@ export const ANY = 0xfc
 export const VERTICAL = 2
 export const HORIZONTAL = 1
 
+
+
 export const KERNEL_DEFINITION: KernelDefinition = [
 	// Rounded corners
 	[ ROUNDED, [

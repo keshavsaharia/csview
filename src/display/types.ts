@@ -1,3 +1,4 @@
+import { Terminal } from '.'
 
 /**
  * @interface 	Point
@@ -27,3 +28,9 @@ export interface Size {
  * 				used from a parent view (either horizontal space if inline, otherwise lines).
  */
 export interface Area extends Point, Size {}
+
+/**
+ * Special keys
+ */
+export type KeyEvent = 'key' | 'backspace' | 'escape' | 'enter' | 'tab' | 'up' | 'down' | 'left' | 'right' | 'exit'
+export type KeyMap = Partial<Record<KeyEvent, (this: Terminal, key: string) => any>>

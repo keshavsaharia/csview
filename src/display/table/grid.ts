@@ -27,7 +27,7 @@ export class TableGrid extends Grid {
 	}
 
 	display(text: Grid) {
-		
+
 	}
 
 	private getTableValue(x: number, y: number, dir: number = 0) {

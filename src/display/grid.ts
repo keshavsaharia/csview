@@ -1,9 +1,12 @@
 import { Size, Area } from './types'
 
+/**
+ * A 2D array of bytes, with each row represented by a Buffer instance
+ */
 export class Grid {
 	private grid: Buffer[]
-	private bytes: number
 	private fill?: number[]
+	private bytes: number
 
 	private size: Size
 	private area: Area
@@ -72,6 +75,7 @@ export class Grid {
 						newRow.writeUint8(this.fill[i], x + i)
 					}
 				}
+			return newRow
 		}
 		else if (row.length > byteWidth) {
 			return row.subarray(0, byteWidth)
@@ -86,7 +90,7 @@ export class Grid {
 	 */
 	has(x: number, y: number, index: number = 0) {
 		// Check lower bounds and upper row limit
-		if (x < 0 || y < 0 || y >= this.grid.length || index >= this.bytes)
+		if (x < 0 || y < 0 || y >= this.grid.length || index >= this.bytes || ! this.grid[0])
 			return false
 		// Use first row to check upper column limit
 		return x * this.bytes + index < this.grid[0].length
@@ -192,6 +196,10 @@ export class Grid {
 		return this.size
 	}
 
+	getArea() {
+		return this.area
+	}
+
 	getWidth() {
 		return this.size.width
 	}
@@ -199,4 +207,50 @@ export class Grid {
 	getHeight() {
 		return this.size.height
 	}
+}
+
+export class ByteGrid {
+	size: Size
+	grid: Buffer
+
+	constructor(size: Size) {
+		this.size = size
+		this.grid = Buffer.alloc(size.width * size.height)
+	}
+
+	resize(size: Size, preserve: boolean = true) {
+		const newGrid = Buffer.alloc(size.width * size.height)
+		if (this.grid && this.size && preserve) {
+			for (let y = 0 ; y < size.height ; y++) {
+				const targetStart = y * size.height
+				const sourceStart = y * this.size.height
+				const sourceEnd = sourceStart + Math.min(size.width, this.size.width)
+				this.grid.copy(newGrid, targetStart, sourceStart, sourceEnd)
+			}
+		}
+
+		this.grid = newGrid
+		this.size = size
+	}
+
+	fill(byte: number) {
+		this.grid.fill(byte)
+	}
+
+	has(x: number, y: number): boolean {
+		return x >= 0 && y >= 0 && x < this.size.width && y < this.size.height
+	}
+
+	private index(x: number, y: number): number {
+		return y * this.size.width + x
+	}
+
+	read(x: number, y: number): number {
+		return this.grid.readUint8(this.index(x, y))
+	}
+
+	write(x: number, y: number, value: number) {
+		return this.grid.writeUint8(value, this.index(x, y))
+	}
+
 }
