@@ -1,4 +1,4 @@
-import { Grid } from '..'
+import { ByteGrid } from '..'
 import { Area, Size } from '../types'
 
 import {
@@ -8,18 +8,18 @@ import {
 	VERTICAL_BOX, HORIZONTAL_BOX, LINE_BOX
 } from './constant'
 
-export class BoxGrid extends Grid {
+export class BoxGrid extends ByteGrid {
 
 	constructor(size: Size) {
-		super(size, 1)
+		super(size)
 	}
 
-	render(): string {
+	render1(): string {
 		const output: string[][] = []
 		for (let y = 0 ; y < this.getHeight() ; y++) {
 			output[y] = []
 			for (let x = 0 ; x < this.getWidth() ; x++) {
-				output[y][x] = BoxGrid.boxCharacter(this.getByte(x, y))
+				output[y][x] = BoxGrid.boxCharacter(this.read(x, y))
 			}
 		}
 		return output.map((line) => line.join('')).join('\n')
@@ -69,18 +69,18 @@ export class BoxGrid extends Grid {
 		const end_y = area.y + area.height - 1
 
 		// Draw horizontal lines and corners
-		this.setUpdate(area.x, area.y, TOP | LEFT)
-		this.setUpdate(area.x, end_y, BOTTOM | LEFT)
+		this.update(area.x, area.y, TOP | LEFT)
+		this.update(area.x, end_y, BOTTOM | LEFT)
 		for (let x = area.x + 1 ; x < end_x ; x++) {
-			this.setUpdate(x, area.y, TOP)
-			this.setUpdate(x, end_y, BOTTOM)
+			this.update(x, area.y, TOP)
+			this.update(x, end_y, BOTTOM)
 		}
 		for (let y = area.y + 1 ; y < end_y ; y++) {
-			this.setUpdate(area.x, y, LEFT)
-			this.setUpdate(end_x, y, RIGHT)
+			this.update(area.x, y, LEFT)
+			this.update(end_x, y, RIGHT)
 		}
-		this.setUpdate(end_x, area.y, TOP | RIGHT)
-		this.setUpdate(end_x, end_y, BOTTOM | RIGHT)
+		this.update(end_x, area.y, TOP | RIGHT)
+		this.update(end_x, end_y, BOTTOM | RIGHT)
 	}
 
 	drawInline(area: Area) {
@@ -88,26 +88,22 @@ export class BoxGrid extends Grid {
 		const end_y = area.y + area.height - 1
 
 		// Draw horizontal lines and corners
-		this.setUpdate(area.x, area.y, SE)
-		this.setUpdate(area.x, end_y, NE)
+		this.update(area.x, area.y, SE)
+		this.update(area.x, end_y, NE)
 		for (let x = area.x + 1 ; x < end_x ; x++) {
-			this.setUpdate(x, area.y, BOTTOM)
-			this.setUpdate(x, end_y, TOP)
+			this.update(x, area.y, BOTTOM)
+			this.update(x, end_y, TOP)
 		}
 		for (let y = area.y + 1 ; y < end_y ; y++) {
-			this.setUpdate(area.x, y, RIGHT)
-			this.setUpdate(end_x, y, LEFT)
+			this.update(area.x, y, RIGHT)
+			this.update(end_x, y, LEFT)
 		}
-		this.setUpdate(end_x, area.y, SW)
-		this.setUpdate(end_x, end_y, NW)
-	}
-
-	private setUpdate(x: number, y: number, direction: number) {
-		this.setByte(x, y, 0, direction | this.getByte(x, y))
+		this.update(end_x, area.y, SW)
+		this.update(end_x, end_y, NW)
 	}
 
 	private setBox(x: number, y: number, value: number, horizontal: boolean) {
-		this.setByte(x, y, 0, BOX | (value << 4) | (horizontal ? 1 : 0))
+		this.write(x, y, BOX | (value << 4) | (horizontal ? 1 : 0))
 	}
 
 }
@@ -115,18 +111,18 @@ export class BoxGrid extends Grid {
 function test() {
 	const grid = new BoxGrid({ width: 50, height: 20 })
 
-	// grid.drawVerticalLine(2, 10, 5)
-	// grid.drawVerticalLine(3, 10, 5.1)
-	// grid.drawVerticalLine(4, 10, 5.2)
-	// grid.drawVerticalLine(5, 10, 5.3)
-	// grid.drawVerticalLine(6, 10, 5.4)
-	// grid.drawVerticalLine(7, 10, 5.5)
-	// grid.drawVerticalLine(8, 10, 5.6)
-	// grid.drawVerticalLine(9, 10, 5.7)
-	// grid.drawVerticalLine(10, 10, 5.8)
-	// grid.drawVerticalLine(11, 10, 5.9)
-	// grid.drawVerticalLine(12, 10, 6.0)
-	// grid.drawVerticalLine(13, 10, 6.0)
+	grid.drawVerticalLine(2, 10, 5)
+	grid.drawVerticalLine(3, 10, 5.1)
+	grid.drawVerticalLine(4, 10, 5.2)
+	grid.drawVerticalLine(5, 10, 5.3)
+	grid.drawVerticalLine(6, 10, 5.4)
+	grid.drawVerticalLine(7, 10, 5.5)
+	grid.drawVerticalLine(8, 10, 5.6)
+	grid.drawVerticalLine(9, 10, 5.7)
+	grid.drawVerticalLine(10, 10, 5.8)
+	grid.drawVerticalLine(11, 10, 5.9)
+	grid.drawVerticalLine(12, 10, 6.0)
+	grid.drawVerticalLine(13, 10, 6.0)
 
 	// grid.drawHorizontalLine(2, 1, 5)
 	// grid.drawHorizontalLine(2, 2, 5.1)
@@ -146,7 +142,7 @@ function test() {
 	// grid.drawOutline({ x: 9, y: 0, width: 41, height: 20 })
 	// grid.drawOutline({ x: 10, y: 1, width: 39, height: 18 })
 	// grid.drawInline({ x: 10, y: 1, width: 39, height: 18 })
-	console.log(grid.render())
+	console.log(grid.render1())
 }
 
 test()

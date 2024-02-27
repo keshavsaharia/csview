@@ -22,7 +22,7 @@ export class TextGrid {
 	}
 
 	setFill(fill?: number[] | string) {
-		if (! fill)
+		if (fill == null)
 			this.fill = undefined
 		else if (typeof fill === 'string')
 			this.fill = Array.from(Buffer.from(fill, TextGrid.encoding))
@@ -41,7 +41,7 @@ export class TextGrid {
 		return 0 <= x && x < this.size.width &&
 		 	   0 <= y && y < this.size.height
 	}
-	
+
 	hasLine(y: number): boolean {
 		return 0 <= y && y < this.grid.length
 	}
@@ -207,7 +207,7 @@ export class TextGrid {
 			return
 
 		// Safe copy from buffer to target output
-		buffer.copy(line, targetStart, 0, Math.min(space, buffer.length))
+		buffer.copy(line, targetStart, 0) //, Math.min(space, buffer.length))
 	}
 
 	getArea() {

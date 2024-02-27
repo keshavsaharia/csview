@@ -1,4 +1,3 @@
-import { Grid } from '.'
 import { Size } from './types'
 
 export class UpdateGrid {

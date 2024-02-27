@@ -1,5 +1,5 @@
 
-import { Size } from './types'
+import { Size, Area } from './types'
 
 export class ByteGrid {
 	size: Size
@@ -42,8 +42,34 @@ export class ByteGrid {
 		this.size = size
 	}
 
-	fill(byte: number) {
+	fill(byte: number): this {
 		this.grid.fill(byte)
+		return this
+	}
+
+	fillArea(area: Area, byte: number): this {
+		for (let y = Math.max(area.y, 0) ; y < area.y + area.height && y < this.getHeight() ; y++) {
+			for (let x = Math.max(area.x, 0) ; x < area.x + area.width && x < this.getWidth() ; x++) {
+				this.grid.writeUint8(byte, this.index(x, y))
+			}
+		}
+		return this
+	}
+
+	fillAreaUpdate(area: Area, update: number, mask?: number): this {
+		for (let y = Math.max(area.y, 0) ; y < area.y + area.height && y < this.getHeight() ; y++) {
+			for (let x = Math.max(area.x, 0) ; x < area.x + area.width && x < this.getWidth() ; x++) {
+				const index = this.index(x, y)
+				let value = this.grid.readUint8(index)
+				if (mask != null)
+					value = value & mask
+
+				// Apply the update, write the new value, and return
+				value = value | update
+				this.grid.writeUint8(value, index)
+			}
+		}
+		return this
 	}
 
 	has(x: number, y: number): boolean {
@@ -101,4 +127,14 @@ export class ByteGrid {
 		return this.size.height
 	}
 
+	getArea() {
+		return { x: 0, y: 0, ...this.size }
+	}
+
+	// Private utility functions
+	sameByte(x: number, y: number, x2: number, y2: number) {
+		if (x == x2 && y == y2)
+			return true
+		return this.read(x, y) === this.read(x2, y2)
+	}
 }

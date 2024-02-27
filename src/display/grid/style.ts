@@ -1,110 +1,51 @@
-import { Grid } from '.'
+import { ByteGrid } from '.'
 import { Area, Size } from './types'
 
-export class StyleGrid extends Grid {
+export class StyleGrid extends ByteGrid {
 
 	private static FOREGROUND = 128
 	private static BACKGROUND = 64
 	private static COLOR = 128 | 64
 
 	constructor(size: Size) {
-		super(size, 2)
+		super(size)
 	}
 
 	setStyle(x: number, y: number, value: number): this {
-		this.setByte(x, y, 0, value)
+		this.write(x, y, value)
 		return this
 	}
 
 	/**
 	 * Fill the area with the given foreground and background color
 	 */
-	fillColor(area: Area, foreground: number, background: number) {
-		const value = StyleGrid.colorValue(foreground, background)
-		for (let y = Math.max(area.y, 0) ; y < area.y + area.height && y < this.getHeight() ; y++) {
-			for (let x = Math.max(area.x, 0) ; x < area.x + area.width && x < this.getWidth() ; x++) {
-				this.setByte(x, y, 1, value)
-
-				const flag = this.getByte(x, y, 0)
-				if ((flag & StyleGrid.COLOR) == 0)
-					this.setByte(x, y, 0, flag | StyleGrid.COLOR)
-			}
-		}
+	fillColor(area: Area) {
+		this.fillAreaUpdate(area, StyleGrid.COLOR)
 	}
 
-	/**
-	 *
-	 */
-	setColor(x: number, y: number, foreground: number, background: number) {
-		if (! this.has(x, y)) return
-
-		const flag = this.getByte(x, y, 0)
-		this.setByte(x, y, 1, StyleGrid.colorValue(foreground, background))
-
-		if ((flag & StyleGrid.COLOR) == 0)
-			this.setByte(x, y, 0, flag | StyleGrid.COLOR)
-	}
-
-	/**
-	 * Get the foreground and background value for the given x, y position
-	 */
-	getColor(x: number, y: number): [ number, number ] {
-		const color = this.getByte(x, y, 1)
-		return [ color & 0x0f, (color & 0xf0) >> 4 ]
-	}
-
-	getEscape(x: number, y: number): Buffer {
-		const [ flag, color ] = this.getValue(x, y)
-		return StyleGrid.escape(flag, color)
-	}
-
-	sameColor(x: number, y: number, x2: number, y2: number) {
-		if (x == x2 && y == y2)
-			return true
-
-		const v1 = this.getValue(x, y)
-		const v2 = this.getValue(x2, y2)
-		return v1[0] == v2[0] && v1[1] == v2[1]
-	}
-
-	getForeground(x: number, y: number): number {
-		return this.getByte(x, y, 1) & 0x0f
-	}
-
-	getBackground(x: number, y: number): number {
-		return (this.getByte(x, y, 1) & 0xf0) >> 4
+	getEscape(x: number, y: number, color?: number): Buffer {
+		return StyleGrid.escape(this.read(x, y), color)
 	}
 
 	/**
 	 * True if the given x, y position has a foreground and/or background
 	 */
 	hasColor(x: number, y: number): boolean {
-		return (this.getByte(x, y, 0) & StyleGrid.COLOR) > 0
+		return (this.read(x, y) & StyleGrid.COLOR) > 0
 	}
 
 	/**
 	 * True if the given x, y position has a foreground
 	 */
 	hasForeground(x: number, y: number): boolean {
-		return (this.getByte(x, y, 0) & StyleGrid.FOREGROUND) > 0
+		return (this.read(x, y) & StyleGrid.FOREGROUND) > 0
 	}
 
 	/**
 	 * True if the given x, y position has a background
 	 */
 	hasBackground(x: number, y: number): boolean {
-		return (this.getByte(x, y, 0) & StyleGrid.BACKGROUND) > 0
-	}
-
-	/**
-	 * Create a single byte color specification.
-	 */
-	static colorValue(foreground: number, background: number = 0) {
-		// Skip bit shift if background is 0
-		if (background == 0)
-			return foreground & 0x0f
-		// Shift background value into upper 4 bits
-		return ((background & 0x0f) << 4) | (foreground & 0x0f)
+		return (this.read(x, y) & StyleGrid.BACKGROUND) > 0
 	}
 
 	/**

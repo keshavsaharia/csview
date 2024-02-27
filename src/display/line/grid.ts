@@ -3,6 +3,10 @@ import { Area } from '../types'
 import { LINE_CHAR } from './constant'
 
 export class LineGrid extends ByteGrid {
+	
+	static NORMAL = NORMAL
+	static BOLD = BOLD
+	static DOUBLE = DOUBLE
 
 	render(byte: number): Buffer {
 		// The index of the table character is pre-mapped to the output symbol encoded

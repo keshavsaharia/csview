@@ -1,5 +1,5 @@
 
-import { Grid } from '..'
+import { ByteGrid } from '..'
 import { Size } from '../types'
 
 import {
@@ -7,7 +7,7 @@ import {
 	HORIZONTAL, VERTICAL, KERNELS
 } from './constant'
 
-export class TableGrid extends Grid {
+export class TableGrid extends ByteGrid {
 
 	// Top 4 bits are overwritten
 	static ROUNDED = ROUNDED
@@ -23,17 +23,13 @@ export class TableGrid extends Grid {
 	static HORIZONTAL = HORIZONTAL
 
 	constructor(size: Size) {
-		super(size, 1)
-	}
-
-	display(text: Grid) {
-
+		super(size)
 	}
 
 	private getTableValue(x: number, y: number, dir: number = 0) {
 		if (! this.has(x, y))
 			return 0
-		const value = this.getByte(x, y)
+		const value = this.read(x, y)
 		if (dir > 0 && ((value & dir) == 0))
 			return 0
 		return value
