@@ -1,18 +1,20 @@
 
 import { ParseOption, ParsedLine } from './types'
 
+export const csvParseOption: ParseOption = {
+	delimiter: ',',
+	newLine: '\n',
+	doubleQuote: true,
+	escape: false
+}
+
 export function parseLine(input: string, start: number = 0, {
 	delimiter = ',',
 	quote = '"',
 	newLine = '\n',
 	doubleQuote = true,
 	escape = false
-}: ParseOption = {
-	delimiter: ',',
-	newLine: '\n',
-	doubleQuote: true,
-	escape: false
-}): ParsedLine {
+}: ParseOption = csvParseOption): ParsedLine {
 
 	const column: Array<string> = []
 	let end = start

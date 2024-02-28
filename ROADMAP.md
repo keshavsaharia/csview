@@ -14,7 +14,11 @@ Resources:
 
 # V1
 
+- [ ] Output CSV file to HTML table viewer
 - [ ] Create schema files in hidden `.csv` folder to store display state
+    - `.csv/schema.json` applies to all CSV files in the directory
+    - `.csv/schema/file-name.csv` - JSON schema that applies to the specific file name
+
 - [ ] Correlate data between multiple CSV files (foreign keys)
 - [ ] Import/export CSV from database
 - [ ] Diff between two CSVs `csview a.csv b.csv -diff -key id`
