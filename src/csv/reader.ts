@@ -33,7 +33,7 @@ export class CsvReader {
         }
 
         const reader = this
-        const stream = this.stream = fs.createReadStream(this.filePath, this.encoding)
+        const stream = this.getReadStream()
 
         return new Promise((resolve, reject) => {
             stream.on('data', (data) => {
@@ -74,6 +74,12 @@ export class CsvReader {
 
     private onRow(row: number, column: string[]) {
         this.row[row] = column
+    }
+
+    private getReadStream(): fs.ReadStream {
+        if (! this.stream)
+            this.stream = fs.createReadStream(this.filePath, this.encoding)
+        return this.stream
     }
 
     async resume() {

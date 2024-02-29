@@ -1,0 +1,114 @@
+<html lang="en">
+    <head>
+        <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        table, th, td {
+            border: 1px solid #afafaf;
+            border-collapse: collapse;
+        }
+        table {
+            min-width: 100%;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+        thead th {
+            text-align: left;
+            padding: 0.2rem 0.4rem;
+        }
+        tbody td {
+            padding: 0.2rem 0.5rem;
+            /* min-width: 150px; */
+            background: #fafafa;
+            vertical-align: top;
+        }
+        tbody td:not(:first-child) {
+            min-width: 150px;
+        }
+        tbody td.edit {
+            padding: 0;
+        }
+        tbody td.edit > input,
+        tbody td.edit > textarea {
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 0.2rem 0.4rem;
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        tbody td.edit > input:focus {
+            outline: solid 2px blue;
+        }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>name</th>
+                    <th>email</th>
+                    <th>age</th>
+                    <th>abc</th>
+                    <th>def</th>
+                    <th>xyz</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="edit"><input type="text" value="Fo&gt;o Bar&amp;&quot;foo"></td>
+                    <td class="edit"><input type="email" value="example@foobar.com"></td>
+                    <td class="edit"><input type="number" value="12"></td>
+                    <td class="edit"><input type="month" value="2022-01"></td>
+                    <td class="edit"><input id="test" type="color" value="#cd3737"></td>
+                    <td class="edit"><textarea rows="3">text area contents
+next line</textarea></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>test</td>
+                    <td class="edit"><input type="email" value="foo@bar.com"></td>
+                    <td class="edit"><input type="date"></td>
+                    <td class="edit"><input type="time" value="17:00"></td>
+                    <td><input type="checkbox" checked></td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>test asdf asdf</td>
+                    <td>foo@bar.com</td>
+                    <td>12</td>
+                    <td>05:00 PM</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>test</td>
+                    <td>foo@bar.com</td>
+                    <td><input type="date"></td>
+                    <td>asbsio</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>test asdf asdf</td>
+                    <td>foo@bar.com</td>
+                    <td>12</td>
+                    <td>asbsio</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </body>
+</html>
