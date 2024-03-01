@@ -1,5 +1,5 @@
-import { Column } from '.'
+import { CsvColumn } from '.'
 
-export class NumberColumn extends Column<number> {
+export class CsvNumberColumn extends CsvColumn<number> {
 	
 }

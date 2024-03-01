@@ -1,10 +1,14 @@
-import { Column } from './column'
+import { CsvColumn } from './column'
 
 export class Schema {
-	column: Column[]
+	column: CsvColumn[]
 
 	constructor() {
 
 	}
+
+    static fromJSON() {
+
+    }
 
 }

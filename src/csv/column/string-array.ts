@@ -1,6 +1,6 @@
-import { Column } from '.'
+import { CsvColumn } from '.'
 
-export class StringArrayColumn extends Column<string[]> {
+export class StringArrayColumn extends CsvColumn<string[]> {
 	/**
 	 * Split delimiter (default is comma ,)
 	 */

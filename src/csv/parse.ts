@@ -14,9 +14,8 @@ export function parseLine(input: string, start: number = 0, {
 	newLine = '\n',
 	doubleQuote = true,
 	escape = false
-}: ParseOption = csvParseOption): ParsedLine {
-
-	const column: Array<string> = []
+}: ParseOption = csvParseOption, column: string[] = []): ParsedLine {
+    
 	let end = start
 	// Keep iterating until newline or end of input string
 	while (end < input.length && input.charAt(end) != newLine) {
@@ -40,7 +39,7 @@ export function parseLine(input: string, start: number = 0, {
 			let value = input.substring(start, end)
 			if (escape)
 				value = value.replace(/\\\"/g, '"')
-			if (doubleQuote)
+			else if (doubleQuote)
 				value = value.replace(/\"\"/g, '"')
 			column.push(value)
 

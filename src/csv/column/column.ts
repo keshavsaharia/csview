@@ -1,10 +1,23 @@
+import {
+    CsvNumberColumn,
+    CsvStringColumn,
+    CsvBooleanColumn
+} from '.'
 
-export interface ColumnOption {
-    edit?: boolean
-}
+import { ColumnType, ColumnOption } from '../types'
 
-export class Column<Type = any, Option extends ColumnOption = ColumnOption> {
+export class CsvColumn<Type = any, Option extends ColumnOption = ColumnOption> {
     option: Partial<ColumnOption> = {}
+
+    static fromJSON(type: ColumnType): CsvColumn {
+        switch (type) {
+        case 'boolean': return new CsvBooleanColumn()
+        case 'number':  return new CsvNumberColumn()
+        case 'string':
+        default:        return new CsvStringColumn()
+        }
+        
+    }
 
     setOption(option: Option): this {
         Object.assign(this.option, option)

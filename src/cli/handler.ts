@@ -2,7 +2,7 @@ import os from 'os'
 import fs from 'fs'
 import path from 'path'
 
-import { Terminal, CsvReader } from '..'
+import { Terminal, CsvTable } from '..'
 import { CliOption } from '.'
 import { CliEnvironment } from './types'
 
@@ -28,15 +28,15 @@ export class CliHandler {
         let index = CliOption.parse(this.globalOption, this.args)
 
         // Get CSV targets
-        const readers: CsvReader[] = []
+        const readers: CsvTable[] = []
         for (; index < this.args.length ; index++) {
             const arg = this.args[index]
             if (CliOption.isOption(arg, this.fileOption))
                 break
 
             const argPath = path.join(this.env.cwd, arg)
-            if (CsvReader.canRead(argPath)) {
-                readers.push(new CsvReader(argPath))
+            if (CsvTable.canRead(argPath)) {
+                readers.push(new CsvTable(argPath))
             }
             else {
                 // console.log('invalid ' + arg)

@@ -101,30 +101,6 @@ export class Server {
 		return this
 	}
 
-    /**
-	 * @func 	{routeRequest}
-	 * @desc 	Route the incoming request to a route handler
-	 */
-	async routeRequest(request: Request, response: Response): Promise<any> {
-		// Check all available routes and prevent infinite recursion if this router
-		// re-handles the request by ensuring each route handler can only handle the
-		// request one time
-		for (const route of this.methods(Route))
-			if (route.canHandle(request)) {
-				try {
-					return await route.handle(request, response)
-				}
-				// Send a 500 internal server error if the route handler failed
-				catch (error) {
-					console.log('error', error)
-					return this.routeError(request, response, 500, error)
-				}
-			}
-
-		// Create a 404 error if no matching route found
-		await this.routeError(request, response, 404)
-	}
-
     private async routeError(request: Request, response: Response, status: number, error?: any) {
 		// for (const route of this.methods(Route))
 		// 	if (route.canHandleError(request, status, error)) {

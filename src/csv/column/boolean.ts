@@ -1,6 +1,7 @@
-import { Column } from '.'
+import { CsvColumn } from '.'
+import { BooleanOption } from '../types'
 
-export class BooleanColumn extends Column<boolean> {
+export class CsvBooleanColumn extends CsvColumn<boolean, BooleanOption> {
 	
     toHTML(value: boolean) {
         return value.toString()

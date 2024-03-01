@@ -1,18 +1,7 @@
-import { Column, ColumnOption } from '.'
+import { CsvColumn } from '.'
+import { DateOption } from '../types'
 
-export interface DateOption extends ColumnOption {
-    /**
-     * Format that date is stored in
-     */
-    format?: string
-    
-    /**
-     * Format that date should be displayed in as text
-     */
-    display?: string
-}
-
-export class DateColumn extends Column<Date, DateOption> {
+export class DateColumn extends CsvColumn<Date, DateOption> {
 
     toText(value: Date) {
 

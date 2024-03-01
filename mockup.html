@@ -1,12 +1,6 @@
 <html lang="en">
     <head>
         <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
         table, th, td {
             border: 1px solid #afafaf;
             border-collapse: collapse;
@@ -17,7 +11,11 @@
             font-size: 1rem;
         }
         thead th {
+            position: relative;
             text-align: left;
+            background: #f0f0f0;
+            line-height: 1.5rem;
+            white-space: nowrap;
             padding: 0.2rem 0.4rem;
         }
         tbody td {
@@ -36,27 +34,35 @@
         tbody td.edit > textarea {
             font-family: monospace;
             font-size: 1rem;
-            padding: 0.2rem 0.4rem;
+            padding: 2px 4px;
             background: none;
-            border: none;
+            border: solid 2px transparent;
             outline: none;
             width: 100%;
         }
+        tbody td.edit > input {
+            height: 28px;
+        }
         tbody td.edit > input:focus {
-            outline: solid 2px blue;
+            border: solid 2px blue;
         }
         </style>
     </head>
-    <body>
-        <table>
+    <body style="width:100%;height:100%;margin:0;padding:0">
+        <table style="min-width:100%;font-family:monospace;font-size:1rem;">
             <thead>
                 <tr>
                     <th></th>
-                    <th>name</th>
-                    <th>email</th>
-                    <th>age</th>
+                    <th>
+                        name
+                    </th>
+                    <th style="min-width:250px">
+                        email
+                    </th>
+                    <th>
+                        age
                     <th>abc</th>
-                    <th>def</th>
+                    <th>de</th>
                     <th>xyz</th>
                 </tr>
             </thead>
@@ -68,8 +74,7 @@
                     <td class="edit"><input type="number" value="12"></td>
                     <td class="edit"><input type="month" value="2022-01"></td>
                     <td class="edit"><input id="test" type="color" value="#cd3737"></td>
-                    <td class="edit"><textarea rows="3">text area contents
-next line</textarea></td>
+                    <td class="edit"><textarea>text area contents wrap to next line</textarea></td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -83,7 +88,7 @@ next line</textarea></td>
                 <tr>
                     <td>3</td>
                     <td>test asdf asdf</td>
-                    <td>foo@bar.com</td>
+                    <td>abcdefghijklmnopqrstuvwxyz</td>
                     <td>12</td>
                     <td>05:00 PM</td>
                     <td>foo bar</td>
@@ -92,6 +97,33 @@ next line</textarea></td>
                 <tr>
                     <td>4</td>
                     <td>test</td>
+                    <td>foo@bar.com</td>
+                    <td><input type="date"></td>
+                    <td>asbsio</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>test asdf asdf</td>
+                    <td>foo@bar.com</td>
+                    <td>12</td>
+                    <td>asbsio</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>test asdf asdf</td>
+                    <td>foo@bar.com</td>
+                    <td>12</td>
+                    <td>05:00 PM</td>
+                    <td>foo bar</td>
+                    <td>baz quux</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="edit"><input type="text"></td>
                     <td>foo@bar.com</td>
                     <td><input type="date"></td>
                     <td>asbsio</td>
