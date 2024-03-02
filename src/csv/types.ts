@@ -37,6 +37,8 @@ export interface DateOption extends ColumnOption {
      * Format that date is stored in
      */
     format?: string
+
+    utc?: boolean
     
     /**
      * Format that date should be displayed in as text

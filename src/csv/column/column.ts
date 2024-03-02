@@ -7,7 +7,16 @@ import {
 import { ColumnType, ColumnOption } from '../types'
 
 export class CsvColumn<Type = any, Option extends ColumnOption = ColumnOption> {
-    option: Partial<ColumnOption> = {}
+    option: Partial<Option> = {}
+
+    constructor(option?: Option) {
+        if (option)
+            Object.assign(this.option, option)
+        this.initialize(option)
+    }
+
+    // Inherited by child implementations
+    initialize(option: Option) {}
 
     static fromJSON(type: ColumnType): CsvColumn {
         switch (type) {
